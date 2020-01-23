@@ -129,9 +129,13 @@ func ParseSource(file string, findStructures []string, opts *options.Options) (*
 	}
 
 	typeInfo := &TypeInfo{
-		Package:           top.Name.Name,
-		Targets:           make([]Target, 0),
-		MakeCreateMethods: opts.MakeCreateMethods,
+		Package: top.Name.Name,
+		Targets: make([]Target, 0),
+		Options: TypeInfoOptions{
+			MakeCreateMethods:   opts.MakeCreateMethods,
+			UseTypeNameAsSuffix: opts.UseTypeNameAsSuffix,
+			UseSuffixes:         opts.UseSuffixes,
+		},
 	}
 	suppressedFields := parseSuppressedFields(opts.IgnoreFields)
 

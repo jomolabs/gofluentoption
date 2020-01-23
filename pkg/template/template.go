@@ -13,7 +13,7 @@ var (
 	methodTemplate = `package {{ .Package }}
 {{ $root := . }}
 {{- range $index, $info := .Targets }}
-{{- if $root.MakeCreateMethods }}
+{{- if $root.Options.MakeCreateMethods }}
 func New{{ $info.Name }}() {{ $info.ReceiverText }} {
 	return {{ $info.CreationText }}{}
 }
@@ -27,7 +27,7 @@ func New{{ $info.Name }}WithValues({{ toArgumentList $info.Fields }}) {{ $info.R
 }
 {{- end }}
 {{ range $index, $field := $info.Fields }}
-func With{{ $field.Name }}({{ $field.LowerName }} {{ $field.Type }}) {{ $info.ReceiverText }} {
+func With{{ $field.Name }}{{ possiblyAddSuffix $info.Name $root.Options.UseSuffixes $root.Options.UseTypeNameAsSuffix }}({{ $field.LowerName }} {{ $field.Type }}) {{ $info.ReceiverText }} {
     return {{ $info.CreationText }}{
         {{ $field.Name }}: {{ $field.LowerName }},
     }
@@ -37,7 +37,6 @@ func ({{ $info.Letter }} {{ $info.ReceiverText }}) With{{ $field.Name }}({{ $fie
     {{ $info.Letter }}.{{ $field.Name }} = {{ $field.LowerName }}
     return {{ $info.Letter }}
 }
-
 {{ end }}
 func Merge{{ $info.Name }}({{ $info.Letter }} ...{{ $info.ReceiverText }}) {{ $info.ReceiverText }} {
     root := {{ $info.CreationText }}{}
@@ -49,7 +48,7 @@ func Merge{{ $info.Name }}({{ $info.Letter }} ...{{ $info.ReceiverText }}) {{ $i
 
     return root
 }
-{{- end }}
+{{ end }}
 `
 )
 
@@ -61,9 +60,29 @@ func toArgumentList(fields []parse.Field) string {
 	return strings.Join(allTypes, ", ")
 }
 
+func possiblyAddSuffix(typeName string, suffixList string, useTypeNameAsSuffix bool) (string, error) {
+	suffixListItems := strings.Split(suffixList, ",")
+	for _, suffixListItem := range suffixListItems {
+		fields := strings.Split(suffixListItem, ":")
+		if len(fields) != 2 {
+			return "", fmt.Errorf("badly formatted suffix entry: \"%s\"", suffixListItem)
+		}
+		if typeName == fields[0] {
+			return fields[1], nil
+		}
+	}
+
+	if useTypeNameAsSuffix {
+		return typeName, nil
+	}
+
+	return "", nil
+}
+
 var (
 	funcMap = map[string]interface{}{
-		"toArgumentList": toArgumentList,
+		"toArgumentList":    toArgumentList,
+		"possiblyAddSuffix": possiblyAddSuffix,
 	}
 )
 

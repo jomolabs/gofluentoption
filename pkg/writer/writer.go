@@ -29,6 +29,6 @@ func New(opts *options.Options, fileName string) (io.Writer, error) {
 			outputFileName = generateFileName(fileName)
 		}
 
-		return os.OpenFile(outputFileName, os.O_WRONLY|os.O_CREATE, 0644)
+		return os.OpenFile(outputFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	}
 }

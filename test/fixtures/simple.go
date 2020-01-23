@@ -7,3 +7,8 @@ type SimpleOptions struct {
 	hidden          bool
 	FuncPointer     func(int) error
 }
+
+type SimplerOptions struct {
+	Name      string
+	OtherName string
+}

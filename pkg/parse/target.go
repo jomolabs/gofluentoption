@@ -15,10 +15,16 @@ type Target struct {
 	Fields       []Field
 }
 
+type TypeInfoOptions struct {
+	MakeCreateMethods   bool
+	UseTypeNameAsSuffix bool
+	UseSuffixes         string
+}
+
 type TypeInfo struct {
-	Package           string
-	Targets           []Target
-	MakeCreateMethods bool
+	Package string
+	Targets []Target
+	Options TypeInfoOptions
 }
 
 type suppressedField struct {

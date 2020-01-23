@@ -1,1 +1,3 @@
-bin/*
+bin/
+release/
+test/fixtures/zz_generated_*

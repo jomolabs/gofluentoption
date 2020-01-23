@@ -21,7 +21,7 @@ func init() {
 
 func registerCLI() {
 	cli.VersionPrinter = func(c *cli.Context) {
-		fmt.Fprintf(c.App.Writer, "Version %s", c.App.Version)
+		fmt.Fprintf(c.App.Writer, "%s\n", c.App.Version)
 	}
 }
 

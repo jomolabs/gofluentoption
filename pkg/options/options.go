@@ -12,6 +12,8 @@ type Options struct {
 	Pointerize             bool
 	MakeCreateMethods      bool
 	IgnoreFields           string
+	UseTypeNameAsSuffix    bool
+	UseSuffixes            string
 
 	flags []cli.Flag
 }
@@ -84,6 +86,22 @@ func NewBindable() *Options {
 			},
 			Usage:       "Do not generate methods for fields with these names. Specify as a comma-separated list. Optionally, if there are structures with same-named fields, you may suppress method generation for that particular structure's field using the syntax \"<typeName>:<fieldName>\".",
 			Destination: &opts.IgnoreFields,
+		},
+		&cli.BoolFlag{
+			Name: "use-type-name-as-suffix",
+			Aliases: []string{
+				"s",
+			},
+			Usage:       "Append the referent type name as a suffix to generic With() methods. This alleviates naming ambiguities when generating an interface for structs with same-name fields in the same package.",
+			Destination: &opts.UseTypeNameAsSuffix,
+		},
+		&cli.StringFlag{
+			Name: "use-suffixes",
+			Aliases: []string{
+				"S",
+			},
+			Usage:       "Suffix methods for individual types. This is a comma-separate list, where each entry specifies the type name, and the suffix for the type, separated by a colon, like so: \"<type name>:<suffix>\".",
+			Destination: &opts.UseSuffixes,
 		},
 	}
 

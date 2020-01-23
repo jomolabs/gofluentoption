@@ -1,5 +1,7 @@
 #!/bin/bash
 
+outputName="${OUTPUT_NAME:-gofluentoption}"
+outputPath="${OUTPUT_PATH:-bin}"
 [ ! -d "bin/" ] && mkdir bin/
 
 function getVersion() {
@@ -14,4 +16,4 @@ function getVersion() {
 version="$(getVersion)"
 >&2 echo "Building version \"$version\"..."
 go mod vendor
-go build -ldflags "-X main.version=$version" -o bin/gofluentoption gofluentoption.go
+go build -ldflags "-X main.version=$version" -o $outputPath/$outputName gofluentoption.go
